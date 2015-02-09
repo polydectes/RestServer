@@ -23,6 +23,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+// compatibility to PHP 5.2
+if (!defined('__DIR__')) {
+	define('__DIR__', dirname(__FILE__));
+}
+
 /**
  * Constants used in RestServer Class.
  */

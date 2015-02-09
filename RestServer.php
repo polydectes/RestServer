@@ -334,8 +334,19 @@ class RestServer
 	public function getPath()
 	{
 		$path = preg_replace('/\?.*$/', '', $_SERVER['REQUEST_URI']);
+
 		// remove root from path
-		if ($this->root) $path = preg_replace('/^' . preg_quote($this->root, '/') . '/', '', $path);
+		if ($this->root) {
+			$path = preg_replace('/^' . preg_quote($this->root, '/') . '/', '', $path);
+		}
+
+		// remove filename
+		$basename = basename($_SERVER['SCRIPT_FILENAME']);
+		$path = preg_replace("/^$basename(\/+)?/", '', $path);
+
+		// remove trailing slash
+		$path = preg_replace('/\/+$/', '', $path);
+
 		// remove trailing format definition, like /controller/action.json -> /controller/action
 		$path = preg_replace('/\.(\w+)$/i', '', $path);
 		return $path;

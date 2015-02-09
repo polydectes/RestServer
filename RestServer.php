@@ -64,6 +64,7 @@ class RestServer
 	public $realm;
 	public $mode;
 	public $root;
+	public $data;
 	
 	protected $map = array();
 	protected $errorClasses = array();

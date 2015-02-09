@@ -132,9 +132,11 @@ class RestServer
 				}
 			}
 			
-			$obj->server = $this;
-			
 			try {
+				if (method_exists($obj, 'setServer')) {
+					$obj->setServer($this);
+				}
+
 				if (method_exists($obj, 'init')) {
 					$obj->init();
 				}

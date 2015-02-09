@@ -458,8 +458,10 @@ class RestServer
 
 	public function setStatus($code)
 	{
-		$code .= ' ' . $this->codes[strval($code)];
-		header("{$_SERVER['SERVER_PROTOCOL']} $code");
+		if (!empty($this->codes[strval($code)])) {
+			$code .= ' ' . $this->codes[strval($code)];
+			header("{$_SERVER['SERVER_PROTOCOL']} $code");
+		}
 	}
 	
 	private function xml_encode($mixed, $domElement=null, $DOMDocument=null) {

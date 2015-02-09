@@ -429,7 +429,7 @@ class RestServer
 
 		elseif ($this->format == RestFormat::XML) {
 
-		if (is_object($data) && method_exists($data, '__keepOut')) {
+			if (is_object($data) && method_exists($data, '__keepOut')) {
 				$data = clone $data;
 				foreach ($data->__keepOut() as $prop) {
 					unset($data->$prop);

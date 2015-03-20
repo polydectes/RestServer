@@ -452,7 +452,7 @@ class RestServer
 					unset($data->$prop);
 				}
 			}
-			$data = $this->csv_encode($data));
+			$data = $this->csv_encode($data);
 
 		} else {
 			if (is_object($data) && method_exists($data, '__keepOut')) {

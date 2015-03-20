@@ -39,13 +39,17 @@ class RestFormat
 	const AMF = 'applicaton/x-amf';
 	const JSON = 'application/json';
 	const XML = 'application/xml';
+	const CSV = 'application/csv';
+	const CSVX = 'application/excel';
 	static public $formats = array(
-		'plain' => RestFormat::PLAIN,
-		'txt' => RestFormat::PLAIN,
-		'html' => RestFormat::HTML,
-		'amf' => RestFormat::AMF,
-		'json' => RestFormat::JSON,
-		'xml'  => RestFormat::XML,
+		'plain'	=> RestFormat::PLAIN,
+		'txt'	=> RestFormat::PLAIN,
+		'html'	=> RestFormat::HTML,
+		'amf'	=> RestFormat::AMF,
+		'json'	=> RestFormat::JSON,
+		'xml'	=> RestFormat::XML,
+		'csv'	=> RestFormat::CSV,
+		'csvx'	=> RestFormat::CSVX,
 	);
 }
 
@@ -439,7 +443,17 @@ class RestServer
 			if ($data && $this->mode == 'debug') {
 				$data = $this->json_format($data);
 			}
-		
+		}
+		elseif (in_array( $this->format, [ RestFormat::CSV, RestFormat::CSVX ])) {
+
+			if (is_object($data) && method_exists($data, '__keepOut')) {
+				$data = clone $data;
+				foreach ($data->__keepOut() as $prop) {
+					unset($data->$prop);
+				}
+			}
+			$data = $this->csv_encode($data));
+
 		} else {
 			if (is_object($data) && method_exists($data, '__keepOut')) {
 				$data = clone $data;
@@ -462,6 +476,25 @@ class RestServer
 			$code .= ' ' . $this->codes[strval($code)];
 			header("{$_SERVER['SERVER_PROTOCOL']} $code");
 		}
+	}
+	
+	private function csv_encode($data) {
+		$new_data = "";
+		$first = 1;
+		foreach ($data as $datum) {
+			if ( $first ) {
+				$first = 0;
+				foreach ($datum as $key=>$value) {
+					$new_data .= $key . ',';
+				}
+				$new_data .= "\n";
+			}
+			foreach ( $datum as $key=>$value) {
+				$new_data .= '"' . $value . '",';
+			}
+			$new_data .= "\n";
+		}
+		return $new_data;
 	}
 	
 	private function xml_encode($mixed, $domElement=null, $DOMDocument=null) {
